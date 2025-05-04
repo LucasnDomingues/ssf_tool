@@ -1,0 +1,18 @@
+[package]
+name = "ssf_tool"
+version = "0.1.0"
+edition = "2024"
+authors = [ "Lucas Domingues"]
+
+[dependencies]
+clap = { version = "4", features = ["derive"] }
+rpassword = "7"
+rand = "0.8" 
+argon2 = "0.4"
+aes-gcm = "0.10"
+anyhow = "1"
+
+
+[dev-dependencies]
+# For creating temporary files/directories in tests
+tempfile = "3.2"
