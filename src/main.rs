@@ -2,8 +2,9 @@ mod crypto;
 mod password;
 
 use anyhow::Result;
-use clap::{Parser, Subcommand};
-use std::path::PathBuf;
+use clap::{CommandFactory, Parser, Subcommand};
+use std::{io, path::PathBuf};
+use clap_complete::{generate, Shell};
 
 /// Simple Secure File (SSF) Tool
 #[derive(Parser, Debug)]
@@ -43,6 +44,13 @@ enum Commands {
         #[arg(short, long, help = "Overwrite output file if it already exists")]
         force: bool, // Add the force flag here
     },
+        /// Generate shell completion scripts
+        #[command(hide = true)]
+        Completion {
+            /// The shell to generate completion for
+            #[arg(value_enum)]
+            shell: Shell,
+        },
 }
 
 fn main() -> Result<()> {
@@ -73,6 +81,11 @@ fn main() -> Result<()> {
             println!("Starting decryption...");
             crypto::decrypt_file(input_path, output_path, password_bytes, *force)?;
             println!("Decryption successful!");
+        }
+        Commands::Completion { shell } => {
+            let mut cmd = Cli::command();
+            let name = cmd.get_name().to_string();
+            generate(*shell, &mut cmd, name, &mut io::stdout());
         }
     }
 
